@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
 }
 
 class SimpleTagExample extends StatefulWidget {
-  SimpleTagExample({Key key, this.title}) : super(key: key);
+  SimpleTagExample({required this.title});
+  // SimpleTagExample({Key key, this.title}) : super(key: key);
 
   final String title;
   final List<String> content = [
@@ -48,12 +49,21 @@ class _SimpleTagExampleState extends State<SimpleTagExample> {
         title: Text(widget.title),
       ),
       body: SimpleTags(
-        content: widget.content,
+        itemCount: widget.content.length,
+        itemBuilder: (context, index) {
+          return widget.content[index];
+        },
         wrapSpacing: 4,
         wrapRunSpacing: 4,
-        onTagPress: (tag) {print('pressed $tag');},
-        onTagLongPress: (tag) {print('long pressed $tag');},
-        onTagDoubleTap: (tag) {print('double tapped $tag');},
+        onTagPress: (index) {
+          print('pressed $index');
+        },
+        onTagLongPress: (index) {
+          print('long pressed $index');
+        },
+        onTagDoubleTap: (index) {
+          print('double tapped $index');
+        },
         tagContainerPadding: EdgeInsets.all(6),
         tagTextStyle: TextStyle(color: Colors.deepPurple),
         tagIcon: Icon(Icons.clear, size: 12),

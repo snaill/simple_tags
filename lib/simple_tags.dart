@@ -5,16 +5,18 @@ import 'package:simple_tags/tag_container.dart';
 
 class SimpleTags extends StatelessWidget {
   /// List of Strings which are displayed by the package.
-  final List<String> content;
+
+  final String Function(BuildContext context, int index) itemBuilder;
+  final int itemCount;
 
   /// Function which gets called by pressing on a tag.
-  final Function(String)? onTagPress;
+  final Function(int)? onTagPress;
 
   /// Function which gets called by a double tap on a tag.
-  final Function(String)? onTagDoubleTap;
+  final Function(int)? onTagDoubleTap;
 
   /// Function which gets called by a long press on a tag.
-  final Function(String)? onTagLongPress;
+  final Function(int)? onTagLongPress;
 
   /// Specifies the decoration for the tag container.
   final BoxDecoration? tagContainerDecoration;
@@ -76,7 +78,8 @@ class SimpleTags extends StatelessWidget {
 
   SimpleTags(
       {Key? key,
-      required this.content,
+      required this.itemBuilder,
+      required this.itemCount,
       this.onTagPress,
       this.onTagDoubleTap,
       this.onTagLongPress,
@@ -113,44 +116,43 @@ class SimpleTags extends StatelessWidget {
         textDirection: wrapTextDirection,
         clipBehavior: wrapClipBehavior,
         verticalDirection: wrapVerticalDirection,
-        children: _buildTagContent());
+        children: _buildTagContent(context));
   }
 
-  List<Widget> _buildTagContent() {
+  List<Widget> _buildTagContent(BuildContext context) {
     List<Widget> toReturn = [];
 
-    if (content.isNotEmpty) {
-      content.forEach((tag) {
-        toReturn.add(TagContainer(
-          tag: tag,
-          tagContainerDecoration: tagContainerDecoration,
-          tagContainerMargin: tagContainerMargin,
-          tagContainerPadding: tagContainerPadding,
-          tagIcon: tagIcon as Icon?,
-          tagTextStyle: tagTextStyle,
-          tagTextAlign: tagTextAlign,
-          tagTextLocale: tagTextLocale,
-          tagTextOverflow: tagTextOverflow,
-          tagTextMaxLines: tagTextMaxlines,
-          tagTextSoftWrap: tagTextSoftWrap,
-          onPressed: () {
-            if (onTagPress != null) {
-              onTagPress!(tag);
-            }
-          },
-          onLongPressed: () {
-            if (onTagLongPress != null) {
-              onTagLongPress!(tag);
-            }
-          },
-          onDoubleTap: () {
-            if (onTagDoubleTap != null) {
-              onTagDoubleTap!(tag);
-            }
-          },
-        ));
-      });
+    for (var i = 0; i < itemCount; i++) {
+      toReturn.add(TagContainer(
+        tag: itemBuilder(context, i),
+        tagContainerDecoration: tagContainerDecoration,
+        tagContainerMargin: tagContainerMargin,
+        tagContainerPadding: tagContainerPadding,
+        tagIcon: tagIcon as Icon?,
+        tagTextStyle: tagTextStyle,
+        tagTextAlign: tagTextAlign,
+        tagTextLocale: tagTextLocale,
+        tagTextOverflow: tagTextOverflow,
+        tagTextMaxLines: tagTextMaxlines,
+        tagTextSoftWrap: tagTextSoftWrap,
+        onPressed: () {
+          if (onTagPress != null) {
+            onTagPress!(i);
+          }
+        },
+        onLongPressed: () {
+          if (onTagLongPress != null) {
+            onTagLongPress!(i);
+          }
+        },
+        onDoubleTap: () {
+          if (onTagDoubleTap != null) {
+            onTagDoubleTap!(i);
+          }
+        },
+      ));
     }
+    ;
 
     return toReturn;
   }
